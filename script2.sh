@@ -3,7 +3,7 @@
 # Check if arguments are provided; if not, use environment variables
 DIRECTORY=${1:-$DIRECTORY_PATH}      # Directory path: uses DIRECTORY_PATH environment variable if not specified as the first argument
 MASK=${2:-$FILE_MASK}                # File mask: uses FILE_MASK environment variable if not specified as the second argument
-MINUTES=${3:-$FILE_AGE_MINUTES}      # File age in minutes: uses FILE_AGE_MINUTES environment variable if not specified as the third argument
+DAYS=${3:-$FILE_AGE_DAYS}            # File age in days: uses FILE_AGE_DAYS environment variable if not specified as the third argument
 AUTO_CONFIRM=false                   # Initialize the auto-confirm flag as "false"
 
 # Check if the auto-confirm flag is set
@@ -12,14 +12,14 @@ if [[ $4 == "-y" || $AUTO_CONFIRM_ENV == "true" ]]; then
 fi
 
 # Validate input parameters
-if [[ -z "$DIRECTORY" || -z "$MASK" || -z "$MINUTES" ]]; then
-  echo "Usage: $0 <directory_path> <file_mask> <file_age_minutes> [-y]"
-  echo "Or set the following environment variables: DIRECTORY_PATH, FILE_MASK, FILE_AGE_MINUTES, AUTO_CONFIRM_ENV"
+if [[ -z "$DIRECTORY" || -z "$MASK" || -z "$DAYS" ]]; then
+  echo "Usage: $0 <directory_path> <file_mask> <file_age_days> [-y]"
+  echo "Or set the following environment variables: DIRECTORY_PATH, FILE_MASK, FILE_AGE_DAYS, AUTO_CONFIRM_ENV"
   exit 1                              # Exit the script if mandatory parameters are missing
 fi
 
-# Find files that match the mask and are older than the specified number of minutes
-FILES_TO_DELETE=$(find "$DIRECTORY" -type f -name "$MASK" -mmin +$MINUTES)
+# Find files that match the mask and are older than the specified number of days
+FILES_TO_DELETE=$(find "$DIRECTORY" -type f -name "$MASK" -mtime +$DAYS)
 if [[ -z "$FILES_TO_DELETE" ]]; then
   echo "No files found for deletion based on the specified criteria."
   exit 0                              # Exit the script if no files match the criteria
